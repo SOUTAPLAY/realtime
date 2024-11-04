@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>リアルタイムテキスト共有</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ここに簡単なスタイルを追加 */
+        .realtime {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        #kanbantext {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <textarea name="textbox" id="realtime" class="realtime" oninput="inputChange()"></textarea>
+    <div id="kanbantext"></div>
+
+    <script>
+        // WebSocketの接続
+        const socket = new WebSocket('ws://localhost:8080');
+
+        // 接続が開かれたとき
+        socket.onopen = function () {
+            console.log('Connected to the server.');
+        };
+
+        // サーバーからメッセージを受信したとき
+        socket.onmessage = function (event) {
+            displayMessage(event.data);
+        };
+
+        // テキストエリアの内容が変わったときの処理
+        function inputChange() {
+            const message = event.currentTarget.value;
+
+            // サーバーにメッセージを送信
+            socket.send(message);
+
+            // 自分の画面にもメッセージを表示
+            displayMessage(message);
+        }
+
+        // メッセージを表示する関数
+        function displayMessage(message) {
+            const kanbantext = document.getElementById("kanbantext");
+            kanbantext.innerHTML = `<p>${message}</p>`;
+        }
+    </script>
+    <script src="server.js"></script>
+</body>
+</html>

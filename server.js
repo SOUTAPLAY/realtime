@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8080 }); // ポート番号を確認
+const wss = new WebSocket.Server({ server }); // ポート番号を確認
 
 wss.on('connection', function connection(ws) {
     console.log('Client connected'); // ここで接続を確認
